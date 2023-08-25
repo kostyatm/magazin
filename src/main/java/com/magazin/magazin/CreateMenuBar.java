@@ -5,14 +5,15 @@ import javafx.event.EventHandler;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TabPane;
 
 public class CreateMenuBar {
 
     MenuBar menuBar = new MenuBar();
 
-    public CreateMenuBar() {
-        Menu fileMenu = new Menu("File");
-        MenuItem exitItem = new MenuItem("Exit");
+    public CreateMenuBar(TabPane tabPane) {
+        Menu fileMenu = new Menu("Файл");
+        MenuItem exitItem = new MenuItem("Выход");
         exitItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -20,7 +21,42 @@ public class CreateMenuBar {
             }
         });
         fileMenu.getItems().addAll(exitItem);
-        menuBar.getMenus().addAll(fileMenu);
+
+        Menu documentsMenu = new Menu("Документы");
+
+        Menu ZapasyZakupkiItem = new Menu("Запасы и закупки");
+        MenuItem PostuplenieItem = new MenuItem("Поступление товаров");
+        PostuplenieItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                CreateTabs createTabs = new CreateTabs();
+
+                createTabs.addTab(tabPane, true, "doc_PostuplenieTowarow","Поступление товаров");
+            }
+        });
+        ZapasyZakupkiItem.getItems().addAll(PostuplenieItem);
+
+        Menu ProdazhiItem = new Menu("Продажи");
+        MenuItem RealizaciyaItem = new MenuItem("Реализация товаров");
+        RealizaciyaItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                CreateTabs createTabs = new CreateTabs();
+
+                createTabs.addTab(tabPane, true, "doc_RealizaciyaTowarow","Реализация товаров");
+            }
+        });
+
+        ProdazhiItem.getItems().addAll(RealizaciyaItem);
+
+        documentsMenu.getItems().addAll(ZapasyZakupkiItem, ProdazhiItem);
+
+        menuBar.getMenus().addAll(fileMenu, documentsMenu);
+
+        CreateTabs createTabs = new CreateTabs();
+
+        createTabs.addTab(tabPane, false, "HomePage", "Начальная страница");
+
     }
 
 }
