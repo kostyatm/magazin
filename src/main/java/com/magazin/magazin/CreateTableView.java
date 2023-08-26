@@ -2,33 +2,104 @@ package com.magazin.magazin;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.collections.ObservableList;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.scene.control.TablePosition;
+import javafx.scene.input.MouseEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Iterator;
+import java.sql.ResultSet;
+import javafx.util.Callback;
+
+import javafx.beans.property.SimpleStringProperty;
 
 public class CreateTableView {
 
-    TableView<String> table = new TableView<String>();
+    private TableView table = new TableView();;
+    private ObservableList<ObservableList> data;
 
-    public CreateTableView(String nameTab, List listColumn) {
+    public CreateTableView(String nameTab, PostgreSQLConnection conDB) {
 
-        table.setPrefWidth(250);
-        table.setPrefHeight(200);
+        ResultSet resultSet = conDB.getSQLQuery(nameTab);
+        if (resultSet != null){
 
-        Iterator iterator = listColumn.iterator();
+            try {
+                data = FXCollections.observableArrayList();
+                for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
+                    //We are using non property style for making dynamic table
+                    final int j = i;
+                    TableColumn col = new TableColumn(resultSet.getMetaData().getColumnName(i + 1));
+                    col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
+                        public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
+                            return new SimpleStringProperty(param.getValue().get(j).toString());
+                        }
+                    });
 
-        while(iterator.hasNext()){
+                    table.getColumns().addAll(col);
+                }
 
-            String stringList = (String)iterator.next();
-            TableColumn listNameCol = new TableColumn(stringList);
-            table.getColumns().add(listNameCol);
+                while(resultSet.next()){
+                    //Iterate Row
+                    ObservableList<String> row = FXCollections.observableArrayList();
+                    for(int i=1 ; i<=resultSet.getMetaData().getColumnCount(); i++){
+                        //Iterate Column
+                        row.add(resultSet.getString(i));
+                    }
+                    data.add(row);
+                }
+
+                table.setItems(this.data);
+
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error on Building Data");
+            }
 
         }
 
     }
 
     public TableView getTable() {
+
+        table.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
+            if (e.getClickCount() == 2) {
+                TablePosition pos = (TablePosition) table.getSelectionModel().getSelectedCells().get(0);
+                int row = pos.getRow();
+
+                TableColumn col = (TableColumn) table.getColumns().get(0);
+                String str = col.getCellObservableValue(row).getValue().toString();
+
+                System.out.println("Selected Value " + str);
+            }
+        });
+
+        /*
+        table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observableValue, Object oldValue, Object newValue) {
+                //Check whether item is selected and set value of selected item to Label
+                if(table.getSelectionModel().getSelectedItem() != null)
+                {*/
+                    /*
+                    TableViewSelectionModel selectionModel = table.getSelectionModel();
+                    ObservableList selectedCells = selectionModel.getSelectedCells();
+                    TablePosition tablePosition = (TablePosition) selectedCells.get(0);
+                    Object val = tablePosition.getTableColumn().getCellData(tablePosition.getRow());
+                    System.out.println("Selected Value " + val);
+                     */
+ /*
+                    TablePosition pos = (TablePosition) table.getSelectionModel().getSelectedCells().get(0);
+                    int row = pos.getRow();
+
+                    TableColumn col = (TableColumn) table.getColumns().get(0);
+                    String str = col.getCellObservableValue(row).getValue().toString();
+
+                    System.out.println("Selected Value " + str);
+                }
+            }
+        });*/
+
         return table;
     }
 

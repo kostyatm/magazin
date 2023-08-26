@@ -32,7 +32,9 @@ public class Main extends Application {
 
         TabPane tabPane = new TabPane();
 
-        MenuBar menuBar = new CreateMenuBar(tabPane).menuBar;
+        PostgreSQLConnection conDB = new PostgreSQLConnection();
+
+        MenuBar menuBar = new CreateMenuBar(tabPane, conDB).menuBar;
 
 //        CreateTabs createTabs = new CreateTabs();
 //

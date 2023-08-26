@@ -11,7 +11,7 @@ public class CreateMenuBar {
 
     MenuBar menuBar = new MenuBar();
 
-    public CreateMenuBar(TabPane tabPane) {
+    public CreateMenuBar(TabPane tabPane, PostgreSQLConnection conDB) {
         Menu fileMenu = new Menu("Файл");
         MenuItem exitItem = new MenuItem("Выход");
         exitItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -31,7 +31,7 @@ public class CreateMenuBar {
             public void handle(ActionEvent event) {
                 CreateTabs createTabs = new CreateTabs();
 
-                createTabs.addTab(tabPane, true, "doc_PostuplenieTowarow","Поступление товаров");
+                createTabs.addTab(tabPane, true, "doc_PostuplenieTowarow","Поступление товаров", conDB);
             }
         });
         ZapasyZakupkiItem.getItems().addAll(PostuplenieItem);
@@ -43,7 +43,7 @@ public class CreateMenuBar {
             public void handle(ActionEvent event) {
                 CreateTabs createTabs = new CreateTabs();
 
-                createTabs.addTab(tabPane, true, "doc_RealizaciyaTowarow","Реализация товаров");
+                createTabs.addTab(tabPane, true, "doc_RealizaciyaTowarow","Реализация товаров", conDB);
             }
         });
 
@@ -55,7 +55,7 @@ public class CreateMenuBar {
 
         CreateTabs createTabs = new CreateTabs();
 
-        createTabs.addTab(tabPane, false, "HomePage", "Начальная страница");
+        createTabs.addTab(tabPane, false, "HomePage", "Начальная страница", conDB);
 
     }
 

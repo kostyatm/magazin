@@ -8,12 +8,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.Priority;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CreateTabs {
 
-    public void addTab(TabPane tabPane, boolean setClosable, String nameTab, String zagolowokTab){
+    public void addTab(TabPane tabPane, boolean setClosable, String nameTab, String zagolowokTab, PostgreSQLConnection conDB){
         Tab tab = new Tab(nameTab);
         tab.setText(zagolowokTab);
         if (nameTab == "doc_PostuplenieTowarow")
@@ -27,13 +24,7 @@ public class CreateTabs {
                 }
             });
 
-            List listColumn = new ArrayList();
-
-            listColumn.add("element 1");
-            listColumn.add("element 2");
-            listColumn.add("element 3");
-
-            TableView tableView = new CreateTableView(nameTab, listColumn).getTable();
+            TableView tableView = new CreateTableView(nameTab, conDB).getTable();
 
             VBox root = new VBox(5);
             root.setSpacing(5);
@@ -54,6 +45,7 @@ public class CreateTabs {
         }
         tab.setClosable(setClosable);
         tabPane.getTabs().add(tab);
+        tabPane.getSelectionModel().select(tab);
     }
 
 }
