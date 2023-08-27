@@ -39,17 +39,7 @@ public class CreateTableView {
                     table.getColumns().addAll(col);
                 }
 
-                while(resultSet.next()){
-                    //Iterate Row
-                    ObservableList<String> row = FXCollections.observableArrayList();
-                    for(int i=1 ; i<=resultSet.getMetaData().getColumnCount(); i++){
-                        //Iterate Column
-                        row.add(resultSet.getString(i));
-                    }
-                    data.add(row);
-                }
-
-                table.setItems(this.data);
+                updateView(resultSet);
 
             } catch(Exception e) {
                 e.printStackTrace();
@@ -63,7 +53,7 @@ public class CreateTableView {
     public TableView getTable() {
 
         table.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-            if (e.getClickCount() == 2) {
+            if (e.getClickCount() == 2 && table.getSelectionModel().getSelectedItem() != null) {
                 TablePosition pos = (TablePosition) table.getSelectionModel().getSelectedCells().get(0);
                 int row = pos.getRow();
 
@@ -101,6 +91,28 @@ public class CreateTableView {
         });*/
 
         return table;
+    }
+
+    public void updateView(ResultSet resultSet){
+
+        try {
+            table.getItems().clear();
+            while (resultSet.next()) {
+                //Iterate Row
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
+                    //Iterate Column
+                    row.add(resultSet.getString(i));
+                }
+                data.add(row);
+            }
+
+            table.setItems(data);
+        }catch(Exception e) {
+            e.printStackTrace();
+            System.out.println("Error on Building Data");
+        }
+
     }
 
 }
