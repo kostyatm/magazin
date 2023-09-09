@@ -67,22 +67,42 @@ public class PostgreSQLConnection {
 
     }
 
-    public ArrayList<NameValueType> getSQLStructureTable(String nameTab){
+    public ArrayList<NameValueType> getSQLStructureTable(String nameTab, String id){
 
         ResultSet resultSet = null;
         ArrayList<NameValueType> result = new ArrayList<NameValueType>();
 
         if (connection != null) {
 
-            String select = "select * from public." + nameTab + " AS tt limit 0;";
+            String where = "";
+            if (id.isEmpty() == false){
+                where = "WHERE tt._id = '" + id + "'";
+            }
+            else{
+                where = "limit 0";
+            }
+
+            String select = "select * from public." + nameTab + " AS tt " + where + ";";
             try {
-                PreparedStatement preparedStatement = connection.prepareStatement(select);
+                PreparedStatement preparedStatement = connection.prepareStatement(select,
+                        ResultSet.TYPE_SCROLL_INSENSITIVE,
+                        ResultSet.CONCUR_READ_ONLY);
                 resultSet = preparedStatement.executeQuery();
-                for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
+                int count = resultSetCount(resultSet);
+//                if (count != 0) {
+//                    resultSet.first();
+//                    resultSet.next();
+//                }
+                for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
                     NameValueType nameValueType = new NameValueType();
-                    nameValueType.setName(resultSet.getMetaData().getColumnName(i + 1));
-                    nameValueType.setValue("");
-                    nameValueType.setTypes(resultSet.getMetaData().getColumnType(i + 1));
+                    nameValueType.setName(resultSet.getMetaData().getColumnName(i));
+                    if (count == 0){
+                        nameValueType.setValue("");
+                    }
+                    else {
+                        nameValueType.setValue(resultSet.getString(i));
+                    }
+                    nameValueType.setTypes(resultSet.getMetaData().getColumnType(i));
                     result.add(nameValueType);
                 }
             } catch (SQLException e) {
@@ -133,5 +153,18 @@ public class PostgreSQLConnection {
         }
 
 
+    }
+
+    private int resultSetCount(ResultSet resultSet) throws SQLException{
+        try{
+            int i = 0;
+            resultSet.last();
+            i = resultSet.getRow();
+            resultSet.first();
+            return i;
+        } catch (Exception e){
+            return 0;
+        }
+//        return 0;
     }
 }

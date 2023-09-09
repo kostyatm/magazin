@@ -10,6 +10,8 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.input.MouseEvent;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
+
 import javafx.util.Callback;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -52,17 +54,18 @@ public class CreateTableView {
 
     public TableView getTable() {
 
-        table.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-            if (e.getClickCount() == 2 && table.getSelectionModel().getSelectedItem() != null) {
-                TablePosition pos = (TablePosition) table.getSelectionModel().getSelectedCells().get(0);
-                int row = pos.getRow();
-
-                TableColumn col = (TableColumn) table.getColumns().get(0);
-                String str = col.getCellObservableValue(row).getValue().toString();
-
-                System.out.println("Selected Value " + str);
-            }
-        });
+//        table.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
+//            if (e.getClickCount() == 2 && table.getSelectionModel().getSelectedItem() != null) {
+//                TablePosition pos = (TablePosition) table.getSelectionModel().getSelectedCells().get(0);
+//                int row = pos.getRow();
+//
+//                TableColumn col = (TableColumn) table.getColumns().get(0);
+//                String str = col.getCellObservableValue(row).getValue().toString();
+//
+//                System.out.println("Selected Value " + str);
+//
+//            }
+//        });
 
         /*
         table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {

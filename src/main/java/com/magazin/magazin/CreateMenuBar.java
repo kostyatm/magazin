@@ -32,7 +32,13 @@ public class CreateMenuBar {
             public void handle(ActionEvent event) {
                 CreateTabs createTabs = new CreateTabs();
 
-                createTabs.addTab(tabPane, true, "ref_Nomeklatura","Номенклатура", conDB, structure);
+                createTabs.addTab(tabPane,
+                        true,
+                        "ref_Nomeklatura",
+                        "Номенклатура",
+                        conDB,
+                        structure,
+                        "");
             }
         });
 
@@ -42,7 +48,13 @@ public class CreateMenuBar {
             public void handle(ActionEvent event) {
                 CreateTabs createTabs = new CreateTabs();
 
-                createTabs.addTab(tabPane, true, "ref_Sklads","Склады", conDB, structure);
+                createTabs.addTab(tabPane,
+                        true,
+                        "ref_Sklads",
+                        "Склады",
+                        conDB,
+                        structure,
+                        "");
             }
         });
         referencesMenu.getItems().addAll(NomeklaturaItem, SkladsItem);
@@ -56,7 +68,13 @@ public class CreateMenuBar {
             public void handle(ActionEvent event) {
                 CreateTabs createTabs = new CreateTabs();
 
-                createTabs.addTab(tabPane, true, "doc_PostuplenieTowarow","Поступление товаров", conDB, structure);
+                createTabs.addTab(tabPane,
+                        true,
+                        "doc_PostuplenieTowarow",
+                        "Поступление товаров",
+                        conDB,
+                        structure,
+                        "");
             }
         });
         ZapasyZakupkiItem.getItems().addAll(PostuplenieItem);
@@ -68,7 +86,13 @@ public class CreateMenuBar {
             public void handle(ActionEvent event) {
                 CreateTabs createTabs = new CreateTabs();
 
-                createTabs.addTab(tabPane, true, "doc_RealizaciyaTowarow","Реализация товаров", conDB, structure);
+                createTabs.addTab(tabPane,
+                        true,
+                        "doc_RealizaciyaTowarow",
+                        "Реализация товаров",
+                        conDB,
+                        structure,
+                        "");
             }
         });
 
@@ -80,7 +104,13 @@ public class CreateMenuBar {
 
         CreateTabs createTabs = new CreateTabs();
 
-        createTabs.addTab(tabPane, false, "HomePage", "Начальная страница", conDB, structure);
+        createTabs.addTab(tabPane,
+                false,
+                "HomePage",
+                "Начальная страница",
+                conDB,
+                structure,
+                "");
 
     }
 
