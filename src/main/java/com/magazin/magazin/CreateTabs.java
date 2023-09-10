@@ -51,7 +51,6 @@ public class CreateTabs {
                     CreateTabs newTab = new CreateTabs();
 
                     newTab.addTab(tabPane, true, nameTab, zagolowokTab, conDB, StructureTable, str);
-
                 }
             });
 
@@ -70,6 +69,52 @@ public class CreateTabs {
                 }
             });
 
+            Button buttonEdit = new Button();
+            buttonEdit.setText("Edit");
+            buttonEdit.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+
+                    if (tableView.getSelectionModel().getSelectedItem() != null) {
+                        TablePosition pos = (TablePosition) tableView.getSelectionModel().getSelectedCells().get(0);
+                        int row = pos.getRow();
+
+                        TableColumn col = (TableColumn) tableView.getColumns().get(0);
+                        String str = col.getCellObservableValue(row).getValue().toString();
+
+                        System.out.println("Selected Value Edit " + str);
+
+                        ArrayList<NameValueType> StructureTable = conDB.getSQLStructureTable(nameTab, str);
+
+                        CreateTabs newTab = new CreateTabs();
+
+                        newTab.addTab(tabPane, true, nameTab, zagolowokTab, conDB, StructureTable, str);
+                    }
+                }
+            });
+
+            Button buttonDelete = new Button();
+            buttonDelete.setText("Delete");
+            buttonDelete.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+
+                    if (tableView.getSelectionModel().getSelectedItem() != null) {
+                        TablePosition pos = (TablePosition) tableView.getSelectionModel().getSelectedCells().get(0);
+                        int row = pos.getRow();
+
+                        TableColumn col = (TableColumn) tableView.getColumns().get(0);
+                        String str = col.getCellObservableValue(row).getValue().toString();
+
+                        System.out.println("Selected Value Delete " + str);
+
+                        conDB.deleteSQLRecord(nameTab, str);
+
+                        createTableView.updateView(conDB.getSQLQuery(nameTab));
+                    }
+                }
+            });
+
             VBox root = new VBox(5);
             root.setSpacing(5);
             root.setFillWidth(true);
@@ -79,6 +124,8 @@ public class CreateTabs {
             topHBox.setFillHeight(true);
 
             topHBox.getChildren().add(buttonAdd);
+            topHBox.getChildren().add(buttonEdit);
+            topHBox.getChildren().add(buttonDelete);
 
             VBox.setMargin(topHBox, new Insets(5, 0, 0, 5));
 
@@ -97,10 +144,10 @@ public class CreateTabs {
         }
         else if (nameTab != "HomePage" && structure.isEmpty() == false) {
 
-            String cssLayout = "-fx-border-color: red;\n" +
-                    "-fx-border-insets: 5;\n" +
-                    "-fx-border-width: 3;\n" +
-                    "-fx-border-style: dashed;\n";
+//            String cssLayout = "-fx-border-color: red;\n" +
+//                    "-fx-border-insets: 5;\n" +
+//                    "-fx-border-width: 3;\n" +
+//                    "-fx-border-style: dashed;\n";
 
             ArrayList<AdvancedTextField> arrayTextField = new ArrayList<AdvancedTextField>();
 
@@ -129,7 +176,12 @@ public class CreateTabs {
                         i++;
                     }
 
-                    conDB.insertSQLRecord(nameTab, structure);
+                    if (id.isEmpty() == true) {
+                        conDB.insertSQLRecord(nameTab, structure);
+                    }
+                    else{
+                        conDB.updateSQLRecord(nameTab, structure, id);
+                    }
 
                     tabPane.getTabs().remove(tabPane.getSelectionModel().getSelectedIndex());
 
@@ -148,7 +200,12 @@ public class CreateTabs {
                         i++;
                     }
 
-                    conDB.insertSQLRecord(nameTab, structure);
+                    if (id.isEmpty() == true) {
+                        conDB.insertSQLRecord(nameTab, structure);
+                    }
+                    else {
+                        conDB.updateSQLRecord(nameTab, structure, id);
+                    }
 
                 }
             });
@@ -189,16 +246,20 @@ public class CreateTabs {
                 lableField.setText(advTextField.getLableText());
                 lableField.setMinWidth(50);
                 lableField.setPrefWidth(maxLengthLable);
+//                lableField.setVisible(advTextField.getVisible());
 
                 TextField textField = advTextField.getField();
                 textField.setPrefWidth(maxLengthValue);
+//                textField.setVisible(advTextField.getVisible());
 
                 HBox fieldHBox = new HBox(5);
                 fieldHBox.setSpacing(5);
                 fieldHBox.setFillHeight(true);
 
-                fieldHBox.getChildren().add(lableField);
-                fieldHBox.getChildren().add(textField);
+//                if (advTextField.getVisible() == true) {
+                    fieldHBox.getChildren().add(lableField);
+                    fieldHBox.getChildren().add(textField);
+//                }
 
                 //////////////////////////////////////////////////////////
 //                fieldHBox.setStyle(cssLayout);

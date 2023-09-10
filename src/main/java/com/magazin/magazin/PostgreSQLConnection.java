@@ -5,9 +5,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.UUID;
 
 public class PostgreSQLConnection {
 
@@ -52,7 +53,7 @@ public class PostgreSQLConnection {
 
         if (connection != null) {
 
-            String select = "select * from public." + nameTab + " AS tt;";
+            String select = "select * from public." + nameTab + " AS tt ORDER BY tt._id;";
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(select);
                 resultSet = preparedStatement.executeQuery();
@@ -140,7 +141,12 @@ public class PostgreSQLConnection {
             PreparedStatement preparedStatement = connection.prepareStatement(SQLText);
             int i = 0;
             for (NameValueType s : structureMap){
-                preparedStatement.setObject(i + 1, s.getValue(), s.getTypes());
+                if (s.getName().equalsIgnoreCase("_id") == true){
+                    preparedStatement.setObject(i + 1, UUID.randomUUID().toString(), s.getTypes());
+                }
+                else {
+                    preparedStatement.setObject(i + 1, s.getValue(), s.getTypes());
+                }
 //                preparedStatement.setString(i + 1, structureMap.get(s));
                 i++;
             }
@@ -153,6 +159,67 @@ public class PostgreSQLConnection {
         }
 
 
+    }
+
+    public void updateSQLRecord(String nameTab, ArrayList<NameValueType> structureMap, String id){
+
+        String SQLText = "UPDATE public." + nameTab + " SET ";
+        String SQLParametrs = "";
+        boolean first = true;
+        for (NameValueType s : structureMap){
+            if (first != true) {
+                SQLText += ", ";
+            }
+            SQLText += s.getName() + " = ?";
+            first = false;
+        }
+
+        SQLText += " WHERE _id = ?;";
+
+        System.out.println(SQLText);
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQLText);
+            int i = 1;
+            int idPosition = 0;
+            String nameId = "_id";
+            for (NameValueType s : structureMap){
+                if (s.getName().equalsIgnoreCase("_id") == true){ idPosition = i - 1; }
+                preparedStatement.setObject(i, s.getValue(), s.getTypes());
+                i++;
+            }
+
+            preparedStatement.setObject(i,
+                    structureMap.get(idPosition).getValue(),
+                    structureMap.get(idPosition).getTypes());
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("SQL Query Failed");
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteSQLRecord(String nameTab, String id){
+
+        String SQLText = "DELETE FROM public." + nameTab + " WHERE _id = ?;";
+
+        System.out.println(SQLText);
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQLText);
+
+            preparedStatement.setObject(1,
+                    id,
+                    Types.OTHER);
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("SQL Query Failed");
+            e.printStackTrace();
+        }
     }
 
     private int resultSetCount(ResultSet resultSet) throws SQLException{

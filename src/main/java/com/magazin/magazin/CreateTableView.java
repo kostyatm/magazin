@@ -31,12 +31,17 @@ public class CreateTableView {
                 for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
                     //We are using non property style for making dynamic table
                     final int j = i;
-                    TableColumn col = new TableColumn(resultSet.getMetaData().getColumnName(i + 1));
+                    String colName = resultSet.getMetaData().getColumnName(i + 1);
+                    TableColumn col = new TableColumn(colName);
                     col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
                         public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
                             return new SimpleStringProperty(param.getValue().get(j).toString());
                         }
                     });
+
+                    if (colName.equalsIgnoreCase("_id") == true) {
+//                        col.setVisible(false);
+                    }
 
                     table.getColumns().addAll(col);
                 }

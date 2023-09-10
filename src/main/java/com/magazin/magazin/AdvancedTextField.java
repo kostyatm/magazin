@@ -7,9 +7,9 @@ public class AdvancedTextField extends TextField{
     String lableText;
     String idText;
     String valueText;
-
     int lengthLable = 0;
     int lengthValue = 0;
+    boolean visible = true;
     public AdvancedTextField(String lable, String id, String value){
         textField = new TextField();
         lableText = lable;
@@ -21,6 +21,10 @@ public class AdvancedTextField extends TextField{
 
         textField.setText(valueText);
         textField.setMinWidth(250);
+
+        if (lable.equalsIgnoreCase("_id") == true) {
+            visible = false;
+        }
     }
 
     public TextField getField() {
@@ -37,5 +41,9 @@ public class AdvancedTextField extends TextField{
 
     public String getLableText(){
         return lableText;
+    }
+
+    public boolean getVisible(){
+        return visible;
     }
 }
